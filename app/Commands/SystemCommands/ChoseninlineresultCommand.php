@@ -1,0 +1,43 @@
+<?php
+
+
+namespace Yangyao\TelegramBot\Commands\SystemCommands;
+
+use Yangyao\TelegramBot\Commands\SystemCommand;
+
+/**
+ * Chosen inline result command
+ */
+class ChoseninlineresultCommand extends SystemCommand
+{
+    /**
+     * @var string
+     */
+    protected $name = 'choseninlineresult';
+
+    /**
+     * @var string
+     */
+    protected $description = 'Chosen result query';
+
+    /**
+     * @var string
+     */
+    protected $version = '1.0.0';
+
+    /**
+     * Command execute method
+     *
+     * @return mixed
+     * @throws \Yangyao\TelegramBot\Exception\TelegramException
+     */
+    public function execute()
+    {
+        //Information about chosen result is returned
+        //$update = $this->getUpdate();
+        //$inline_query = $update->getChosenInlineResult();
+        //$query = $inline_query->getQuery();
+
+        return parent::execute();
+    }
+}

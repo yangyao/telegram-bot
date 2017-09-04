@@ -1,0 +1,21 @@
+{
+    "name": "yangyao/telegram-bot",
+    "description": "yet another telegram bot",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "yangyao",
+            "email": "yangyaohappy@outlook.com"
+        }
+    ],
+    "require": {
+        "guzzlehttp/guzzle": "^6.2",
+        "vlucas/phpdotenv": "~2.2",
+        "symfony/console": "~3.2"
+    },
+    "autoload":{
+        "psr-4":{
+            "Yangyao\\TelegramBot\\":"app/"
+        }
+    }
+}

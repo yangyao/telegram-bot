@@ -1,0 +1,10 @@
+#!/usr/bin/env php
+<?php
+
+require __DIR__.'/bootstrap/start.php';
+$app = new Symfony\Component\Console\Application('Telegram Bot Console', '1.0');
+$app->add(new Yangyao\TelegramBot\Console\WebHookSetCommand);
+$app->add(new Yangyao\TelegramBot\Console\WebHookUnsetCommand);
+$app->add(new Yangyao\TelegramBot\Console\GetUpdateCommand);
+$app->run();
+
