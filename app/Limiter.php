@@ -36,9 +36,8 @@ class Limiter {
         'setChatDescription',
     ];
 
-    private $limiter_enabled = false;
-
-    private $limiter_interval = 10;
+    private  $limiter_interval = 10;
+    private  $limiter_enabled = false;
 
     /**@var  HandlerInterface $handler */
     private $handler = NULL;
@@ -48,35 +47,16 @@ class Limiter {
         $this->handler = $handler;
     }
 
-
-    /**
-     * Enable requests limiter
-     *
-     * @param  array $options
-     *
-     * @return \Yangyao\TelegramBot\Telegram
-     */
-    public function enableLimiter()
-    {
-        $options = [];
-        $options_default = [
-            'interval' => 1,
-        ];
-
-        $options = array_merge($options_default, $options);
-
-        if (!is_numeric($options['interval']) || $options['interval'] <= 0) {
-            throw new TelegramException('Interval must be a number and must be greater than zero!');
-        }
-
-        $this->limiter_interval = $options['interval'];
-        $this->limiter_enabled  = true;
+    public function setInterval($limiter_interval){
+        $this->limiter_interval = $limiter_interval;
     }
 
+    public function enableLimiter(){
+        $this->limiter_enabled = true;
+    }
 
     /**
      * This functions delays API requests to prevent reaching Telegram API limits
-     *  Can be disabled while in execution by 'Request::setLimiter(false)'
      *
      * @link https://core.telegram.org/bots/faq#my-bot-is-hitting-limits-how-do-i-avoid-this
      *
@@ -84,10 +64,12 @@ class Limiter {
      * @param array  $data
      *
      * @throws \Yangyao\TelegramBot\Exception\TelegramException
+     * @return boolean
      */
 
     public function limitTelegramRequests($action, $data){
-        if (!$this->limiter_enabled) return ;
+
+        if(!$this->limiter_enabled) return true;
 
         $chat_id           = isset($data['chat_id']) ? $data['chat_id'] : null;
         $inline_message_id = isset($data['inline_message_id']) ? $data['inline_message_id'] : null;
@@ -111,6 +93,7 @@ class Limiter {
             }
             $this->handler->insertTelegramRequest($action, $data);
         }
+        return true;
     }
 
 } 

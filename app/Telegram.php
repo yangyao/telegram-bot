@@ -72,6 +72,10 @@ class Telegram
     /**@var Schedule $schedule*/
     private  $schedule = null;
 
+
+    /**@var ClientInterface $client*/
+    private  $client = null;
+
     /**@var HandlerInterface $handler*/
     private $handler = null;
 
@@ -80,12 +84,10 @@ class Telegram
      *
      * @param string $api_key
      * @param string $bot_username
-     * @param ClientInterface $client
-     * @param Schedule $schedule
      *
      * @throws \Yangyao\TelegramBot\Exception\TelegramException
      */
-    public function __construct($api_key, $bot_username, ClientInterface $client, Schedule $schedule)
+    public function __construct($api_key, $bot_username)
     {
         if (empty($api_key)) {
             throw new TelegramException('API KEY not defined!');
@@ -100,10 +102,10 @@ class Telegram
         $this->bot_id  = $matches[1];
         $this->api_key = $api_key;
         $this->bot_username = $bot_username;
+    }
+
+    public function setSchedule(Schedule $schedule){
         $this->schedule = $schedule;
-
-        Request::initialize($this,$client);
-
     }
 
     public function getSchedule(){
@@ -114,9 +116,6 @@ class Telegram
         $this->handler = $handler;
     }
 
-    /**
-     * @return HandlerInterface
-     */
     public function getDatabaseHandler(){
         return $this->handler;
     }
@@ -162,20 +161,16 @@ class Telegram
     public function handleWebhook()
     {
         $this->input = Request::getInput();
-
         if (empty($this->input)) {
             throw new TelegramException('Input is empty!');
         }
-
         $post = json_decode($this->input, true);
         if (empty($post)) {
             throw new TelegramException('Invalid JSON!');
         }
-
         if ($response = $this->processUpdate(new Update($post, $this->bot_username))) {
             return $response->isOk();
         }
-
         return false;
     }
 

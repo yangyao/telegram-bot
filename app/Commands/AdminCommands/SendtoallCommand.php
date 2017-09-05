@@ -54,15 +54,17 @@ class SendtoallCommand extends AdminCommand
         if ($text === '') {
             $text = 'Write the message to send: /sendtoall <message>';
         } else {
+
+            $chats = $this->handler->selectChats( [
+                'groups'      => true,
+                'supergroups' => true,
+                'channels'    => false,
+                'users'       => true,
+            ]);
             $results = Request::sendToActiveChats(
+                $chats,
                 'sendMessage', //callback function to execute (see Request.php methods)
-                ['text' => $text], //Param to evaluate the request
-                [
-                    'groups'      => true,
-                    'supergroups' => true,
-                    'channels'    => false,
-                    'users'       => true,
-                ]
+                ['text' => $text] //Param to evaluate the request
             );
 
             $total  = 0;

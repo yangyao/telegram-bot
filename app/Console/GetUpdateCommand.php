@@ -11,7 +11,6 @@ use Yangyao\TelegramBot\Console\BaseCommand as Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Yangyao\TelegramBot\Exception\TelegramException;
-use Yangyao\TelegramBot\Database\Factory;
 
 class GetUpdateCommand extends Command
 {
@@ -24,9 +23,6 @@ class GetUpdateCommand extends Command
     public function execute(InputInterface $input, OutputInterface $output)
     {
         try {
-            $handler = Factory::handler(getenv('DB_CONNECTION'),$config = ['database' => dirname(dirname(__DIR__))."/storage/db/telegram.db"]);
-            $this->telegram->setDatabaseHandler($handler);
-            // Handle telegram getUpdates request
             $server_response = $this->telegram->handleUpdates();
             if ($server_response->isOk()) {
                 $update_count = count($server_response->getResult());

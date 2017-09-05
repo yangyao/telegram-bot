@@ -33,5 +33,15 @@ interface  HandlerInterface
      * @return mixed
      */
     public function getTelegramRequestCount($chat_id, $inline_message_id);
+    /**
+     * Insert Telegram API request in db
+     *
+     * @param string $method
+     * @param array  $data
+     *
+     * @return bool If the insert was successful
+     * @throws \Yangyao\TelegramBot\Exception\TelegramException
+     */
+    public function insertTelegramRequest($method, $data);
 
 }

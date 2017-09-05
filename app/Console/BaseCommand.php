@@ -8,11 +8,15 @@ namespace Yangyao\TelegramBot\Console;
 
 use Yangyao\TelegramBot\Commands\Schedule;
 use Symfony\Component\Console\Command\Command;
+use Yangyao\TelegramBot\Limiter;
 use Yangyao\TelegramBot\Telegram;
 use GuzzleHttp\Client;
+use Yangyao\TelegramBot\Request;
+use Yangyao\TelegramBot\Database\Factory;
 class BaseCommand extends Command
 {
-    protected $telegram = null;
+    /**@var Telegram $telegram */
+    public $telegram = null;
 
     public function __construct($name = null)
     {
@@ -23,7 +27,12 @@ class BaseCommand extends Command
         $schedule = new Schedule();
         $schedule->setCommandNamespace('\\Yangyao\\Telegram\\Commands\\');
         $schedule->enableAdmins([]);
-        $this->telegram = new Telegram(getenv('BOT_TOKEN'), getenv('BOT_USERNAME'), $client, $schedule);
+        $this->telegram = new Telegram(getenv('BOT_TOKEN'), getenv('BOT_USERNAME'));
+        $handler = Factory::handler(getenv('DB_CONNECTION'),$config = ['database' => dirname(dirname(__DIR__))."/storage/db/telegram.db"]);
+        $this->telegram->setDatabaseHandler($handler);
+        Request::initialize($this->telegram,$client);
+        $limiter = new Limiter($handler);
+        Request::setLimiter($limiter);
         parent::__construct($name);
     }
 

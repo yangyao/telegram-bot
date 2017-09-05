@@ -1,17 +1,10 @@
 <?php
-/**
- * This file is part of the TelegramBot package.
- *
- * (c) Avtandil Kikabidze aka LONGMAN <akalongman@gmail.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
 
-namespace Yangyao\Telegram\Commands\UserCommands;
 
-use Longman\TelegramBot\Commands\UserCommand;
-use Longman\TelegramBot\Request;
+namespace Yangyao\TelegramBot\Commands\UserCommands;
+
+use Yangyao\TelegramBot\Commands\UserCommand;
+use Yangyao\TelegramBot\Request;
 
 /**
  * User "/image" command
@@ -43,8 +36,8 @@ class ImageCommand extends UserCommand
     /**
      * Command execute method
      *
-     * @return \Longman\TelegramBot\Entities\ServerResponse
-     * @throws \Longman\TelegramBot\Exception\TelegramException
+     * @return \Yangyao\TelegramBot\Entities\ServerResponse
+     * @throws \Yangyao\TelegramBot\Exception\TelegramException
      */
     public function execute()
     {

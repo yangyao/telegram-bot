@@ -34,8 +34,8 @@ use Yangyao\TelegramBot\Commands\SystemCommands\StartCommand;
 use Yangyao\TelegramBot\Commands\SystemCommands\SupergroupchatcreatedCommand;
 use Yangyao\TelegramBot\Entities\CallbackQuery;
 use Yangyao\TelegramBot\Telegram;
-use Yangyao\Telegram\Commands\SystemCommands\EditedchannelpostCommand;
-use Yangyao\Telegram\Commands\SystemCommands\MigratefromchatidCommand;
+use Yangyao\TelegramBot\Commands\SystemCommands\EditedchannelpostCommand;
+use Yangyao\TelegramBot\Commands\SystemCommands\MigratefromchatidCommand;
 class BuiltinRegistry extends Registry{
 
     public $telegram = null;

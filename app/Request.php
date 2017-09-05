@@ -93,16 +93,9 @@ class Request
     /**
      * Request limiter
      *
-     * @var boolean
+     * @var Limiter $limiter
      */
-    private static $limiter_enabled;
-
-    /**
-     * Request limiter's interval between checks
-     *
-     * @var boolean
-     */
-    private static $limiter_interval;
+    private static $limiter;
 
     /**
      * Available actions to send
@@ -194,6 +187,19 @@ class Request
         self::$client = $client;
     }
 
+
+    /**
+     * Set a request limiter
+     *
+     * @param Limiter $limiter
+     *
+     * @throws \Yangyao\TelegramBot\Exception\TelegramException
+     */
+    public static function setLimiter(Limiter $limiter)
+    {
+        self::$limiter = $limiter;
+    }
+
     /**
      * Set input from stdin and return it
      *
@@ -202,55 +208,13 @@ class Request
      */
     public static function getInput()
     {
-
         $input = file_get_contents('php://input');
-
         // Make sure we have a string to work with.
         if (!is_string($input)) {
             throw new TelegramException('Input must be a string!');
         }
-
         self::$input = $input;
-
         return self::$input;
-    }
-
-    /**
-     * Generate general fake server response
-     *
-     * @param array $data Data to add to fake response
-     *
-     * @return array Fake response data
-     */
-    public static function generateGeneralFakeServerResponse(array $data = [])
-    {
-        //PARAM BINDED IN PHPUNIT TEST FOR TestServerResponse.php
-        //Maybe this is not the best possible implementation
-
-        //No value set in $data ie testing setWebhook
-        //Provided $data['chat_id'] ie testing sendMessage
-
-        $fake_response = ['ok' => true]; // :)
-
-        if ($data === []) {
-            $fake_response['result'] = true;
-        }
-
-        //some data to let iniatilize the class method SendMessage
-        if (isset($data['chat_id'])) {
-            $data['message_id'] = '1234';
-            $data['date']       = '1441378360';
-            $data['from']       = [
-                'id'         => 123456789,
-                'first_name' => 'botname',
-                'username'   => 'namebot',
-            ];
-            $data['chat']       = ['id' => $data['chat_id']];
-
-            $fake_response['result'] = $data;
-        }
-
-        return $fake_response;
     }
 
     /**
@@ -367,7 +331,6 @@ class Request
         if ($fp === false) {
             throw new TelegramException('Cannot open "' . $file . '" for reading');
         }
-
         return $fp;
     }
 
@@ -385,8 +348,7 @@ class Request
         self::ensureValidAction($action);
         self::addDummyParamIfNecessary($action, $data);
         self::ensureNonEmptyData($data);
-        // todo 这里要做一个频率限制
-        //self::$telegram->limitTelegramRequests($action, $data);
+        if(!is_null(self::$limiter)) self::$limiter->limitTelegramRequests($action, $data);
         $response = json_decode(self::execute($action, $data), true);
         if (null === $response) {
             throw new TelegramException('Telegram returned an invalid response! Please review your bot name and API key.');
@@ -504,24 +466,18 @@ class Request
     /**
      * Send message to all active chats
      *
+     * @param array  $chats
      * @param string $callback_function
      * @param array  $data
-     * @param array  $select_chats_params
      *
      * @return array
      * @throws TelegramException
      */
-    public static function sendToActiveChats(
-        $callback_function,
-        array $data,
-        array $select_chats_params
-    ) {
+    public static function sendToActiveChats($chats, $callback_function,array $data)
+    {
         if (!method_exists(Request::class, $callback_function)) {
             throw new TelegramException('Method "' . $callback_function . '" not found in class Request.');
         }
-
-        $chats = DB::selectChats($select_chats_params);
-
         $results = [];
         if (is_array($chats)) {
             foreach ($chats as $row) {
@@ -529,31 +485,7 @@ class Request
                 $results[]       = call_user_func(Request::class . '::' . $callback_function, $data);
             }
         }
-
         return $results;
     }
 
-    /**
-     * Enable request limiter
-     *
-     * @param boolean $value
-     * @param array   $options
-     *
-     * @throws \Yangyao\TelegramBot\Exception\TelegramException
-     */
-    public static function setLimiter($value = true, array $options = [])
-    {
-            $options_default = [
-                'interval' => 1,
-            ];
-
-            $options = array_merge($options_default, $options);
-
-            if (!is_numeric($options['interval']) || $options['interval'] <= 0) {
-                throw new TelegramException('Interval must be a number and must be greater than zero!');
-            }
-
-            self::$limiter_interval = $options['interval'];
-            self::$limiter_enabled  = $value;
-    }
 }
