@@ -44,9 +44,8 @@ class ShortenerCommand extends UserCommand
     {
         $message = $this->getMessage();
         $chat_id = $message->getChat()->getId();
-        $user_id = $message->getFrom()->getId();
 
-        $text = Botan::shortenUrl('https://github.com/php-telegram-bot/core', $user_id);
+        $text = file_get_contents('http://suo.im/api.php?url='.urlencode('https://github.com/yangyao'));
 
         $data = [
             'chat_id' => $chat_id,
