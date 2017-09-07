@@ -31,8 +31,7 @@ class BaseCommand extends Command
         $handler = Factory::handler(getenv('DB_CONNECTION'),$config = ['database' => dirname(dirname(__DIR__))."/storage/db/telegram.db"]);
         $this->telegram->setDatabaseHandler($handler);
         Request::initialize($this->telegram,$client);
-        $limiter = new Limiter($handler);
-        Request::setLimiter($limiter);
+        Request::setLimiter(new Limiter($handler));
         parent::__construct($name);
     }
 

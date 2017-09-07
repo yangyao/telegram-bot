@@ -120,15 +120,6 @@ class Telegram
         return $this->handler;
     }
 
-    /**
-     * Handle getUpdates method
-     *
-     * @param int|null $limit
-     * @param int|null $timeout
-     *
-     * @return \Yangyao\TelegramBot\Entities\ServerResponse
-     * @throws \Yangyao\TelegramBot\Exception\TelegramException
-     */
     public function handleUpdates($limit = null, $timeout = null)
     {
         $id = $this->handler->getLastTelegramUpdateId();
@@ -151,13 +142,6 @@ class Telegram
         return $response;
     }
 
-    /**
-     * Handle bot request from webhook
-     *
-     * @return bool
-     *
-     * @throws \Yangyao\TelegramBot\Exception\TelegramException
-     */
     public function handleWebhook()
     {
         $this->input = Request::getInput();
@@ -174,27 +158,12 @@ class Telegram
         return false;
     }
 
-    /**
-     * Process bot Update request
-     *
-     * @param \Yangyao\TelegramBot\Entities\Update $update
-     *
-     * @return \Yangyao\TelegramBot\Entities\ServerResponse
-     * @throws \Yangyao\TelegramBot\Exception\TelegramException
-     */
     public function processUpdate(Update $update)
     {
         $this->handler->insertRequest($update);
         return $this->schedule->run($this,$update);
     }
 
-    /**
-     * Set custom upload path
-     *
-     * @param string $path Custom upload path
-     *
-     * @return \Yangyao\TelegramBot\Telegram
-     */
     public function setUploadPath($path)
     {
         $this->upload_path = $path;
@@ -202,23 +171,11 @@ class Telegram
         return $this;
     }
 
-    /**
-     * Get custom upload path
-     *
-     * @return string
-     */
     public function getUploadPath()
     {
         return $this->upload_path;
     }
 
-    /**
-     * Set custom download path
-     *
-     * @param string $path Custom download path
-     *
-     * @return \Yangyao\TelegramBot\Telegram
-     */
     public function setDownloadPath($path)
     {
         $this->download_path = $path;
@@ -226,67 +183,31 @@ class Telegram
         return $this;
     }
 
-    /**
-     * Get custom download path
-     *
-     * @return string
-     */
     public function getDownloadPath()
     {
         return $this->download_path;
     }
 
-
-
-    /**
-     * Get API key
-     *
-     * @return string
-     */
     public function getApiKey()
     {
         return $this->api_key;
     }
 
-    /**
-     * Get Bot name
-     *
-     * @return string
-     */
     public function getBotUsername()
     {
         return $this->bot_username;
     }
 
-    /**
-     * Get Bot Id
-     *
-     * @return string
-     */
     public function getBotId()
     {
         return $this->bot_id;
     }
 
-    /**
-     * Get Version
-     *
-     * @return string
-     */
     public function getVersion()
     {
         return $this->version;
     }
 
-    /**
-     * Set Webhook for bot
-     *
-     * @param string $url
-     * @param array  $data Optional parameters.
-     *
-     * @return \Yangyao\TelegramBot\Entities\ServerResponse
-     * @throws \Yangyao\TelegramBot\Exception\TelegramException
-     */
     public function setWebhook($url, array $data = [])
     {
         if (empty($url)) {
@@ -315,13 +236,7 @@ class Telegram
 
         return $result;
     }
-
-    /**
-     * Delete any assigned webhook
-     *
-     * @return mixed
-     * @throws \Yangyao\TelegramBot\Exception\TelegramException
-     */
+    
     public function deleteWebhook()
     {
         $result = Request::deleteWebhook();

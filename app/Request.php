@@ -350,7 +350,7 @@ class Request
         self::ensureNonEmptyData($data);
         if(!is_null(self::$limiter)) self::$limiter->limitTelegramRequests($action, $data);
         $response = json_decode(self::execute($action, $data), true);
-        if (null === $response) {
+        if (null === $response || !$response) {
             throw new TelegramException('Telegram returned an invalid response! Please review your bot name and API key.');
         }
         return new ServerResponse($response, self::$telegram->getBotUsername());
